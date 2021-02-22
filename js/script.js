@@ -18,7 +18,7 @@ const render = function() {
 
   
 
-  todoData.forEach(function(item){
+  todoData.forEach(function(item, i){
     const li = document.createElement('li');
     li.classList.add('todo-item');
 
@@ -48,10 +48,11 @@ const render = function() {
     const btnTodoRemove = li.querySelector('.todo-remove');
     btnTodoRemove.addEventListener('click', function(item, i){
      localStorage.removeItem('todoData' , JSON.stringify(todoData));
-      todoData.splice(i, 1);
+      todoData.splice(i, 0);
+      
       render();
     });
-
+    
   });
 
 };
@@ -65,14 +66,18 @@ todoControl.addEventListener('submit', function(event){
     value: headerInput.value,
     completed: false
   };
-  headerInput.value = '';
   
+  // todoData.push(newTodo);
   if (headerInput.value !== '') {
     todoData.push(newTodo);
-    render();
+    
+  } else {
+    headerInput.value = '';
   }
-  
+  render();
   upDateLocal();
 });
 
 render();
+
+
