@@ -67,13 +67,11 @@ todoControl.addEventListener('submit', function(event){
   };
   headerInput.value = '';
   
-  
-  
-  todoData.push(newTodo);
-  if (newTodo.value === '') {
-    return false;
+  if (headerInput.value !== '') {
+    todoData.push(newTodo);
+    render();
   }
-  render();
+  
   upDateLocal();
 });
 
