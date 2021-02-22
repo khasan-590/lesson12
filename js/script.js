@@ -6,55 +6,52 @@ const  todoControl = document.querySelector('.todo-control'),
     todoCompleted = document.querySelector('.todo-completed');
 
 
-const  todoData = [];
+let todoData = JSON.parse(localStorage.getItem('Планы'));
 
-const upDateLocal = () => {
-  localStorage.setItem('todoData' , JSON.stringify(todoData) );
-};
+const render = function () {
+	todoList.textContent = '';
+	todoCompleted.textContent = '';
 
-const render = function() {
-  todoList.textContent = '';
-  todoCompleted.textContent = '';
+	if (todoData !== null) {
+		todoData.forEach(function (item, i) {
+			const li = document.createElement('li');
+			li.classList.add('todo-item');
 
+			li.innerHTML ='<span class="text-todo">' + item.value + '</span>' +
+      '<div class="todo-buttons">' + 
+      '<button class="todo-remove"></button>' +
+      '<button class="todo-complete"></button>' +
+      '</div>' ;
+
+			if (item.completed) {
+				todoCompleted.append(li);
+			} else {
+				todoList.append(li);
+			}
+
+			const btnTodoComplete = li.querySelector('.todo-complete');
+			btnTodoComplete.addEventListener('click', function () {
+				item.completed = !item.completed;
+				render();
+			});
+
+			const btnTodoRemove = li.querySelector('.todo-remove');
+			btnTodoRemove.addEventListener('click', function () {
+				todoData.splice(i, 1);
+				render();
+			});
+		});
+
+	} else {
+
+		todoData = [];
+
+	}
+
+
+	let todoDataMain = JSON.stringify(todoData);
+	localStorage.setItem('Планы', todoDataMain);
   
-
-  todoData.forEach(function(item, i){
-    const li = document.createElement('li');
-    li.classList.add('todo-item');
-
-    li.innerHTML = '<span class="text-todo">' + item.value + '</span>' +
-    '<div class="todo-buttons">' + 
-    '<button class="todo-remove"></button>' +
-    '<button class="todo-complete"></button>' +
-    '</div>' ;
-
-    if (item.completed){
-      todoCompleted.append(li);
-       
-    } else {
-      todoList.append(li);
-    }
-
-    
-
-    const btnTodoComplete = li.querySelector('.todo-complete');
-    btnTodoComplete.addEventListener('click', function(){
-      item.completed = !item.completed;
-      render();
-    });
-    
-    
-
-    const btnTodoRemove = li.querySelector('.todo-remove');
-    btnTodoRemove.addEventListener('click', function(item, i){
-     localStorage.removeItem('todoData' , JSON.stringify(todoData));
-      todoData.splice(i, 0);
-      
-      render();
-    });
-    
-  });
-
 };
 
 
@@ -67,15 +64,14 @@ todoControl.addEventListener('submit', function(event){
     completed: false
   };
   
-  // todoData.push(newTodo);
-  if (headerInput.value !== '') {
-    todoData.push(newTodo);
-    
-  } else {
-    headerInput.value = '';
-  }
-  render();
-  upDateLocal();
+  if (headerInput.value === '') {
+		alert ('Введите план действий!');
+	} else {
+		todoData.push(newTodo);
+		render();
+	}
+	headerInput.value = '';
+  
 });
 
 render();
